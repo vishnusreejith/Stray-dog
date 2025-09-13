@@ -32,31 +32,6 @@
             100% { transform: rotate(360deg); }
         }
         
-        @keyframes fadeInShape {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* Style for the main result animation */
-        #dog-animation-container svg {
-            width: 100%;
-            height: auto;
-            max-height: 120px;
-            opacity: 0;
-            transform-origin: center;
-            animation: fadeInShape 0.8s ease-out forwards;
-            animation-delay: 0.2s; /* Delay to appear after the rest of the content */
-        }
-
-        /* NEW: Style for the hover preview animation */
-        #shape-preview-container svg {
-            width: 100%;
-            height: auto;
-            max-height: 80px;
-            opacity: 0;
-            transform-origin: center;
-            animation: fadeInShape 0.4s ease-out forwards;
-        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 flex flex-col items-center min-h-screen p-4">
@@ -110,11 +85,6 @@
                     <h3 data-translate="hint_title" class="text-lg font-semibold text-slate-800 mb-3">What does the dog look like?</h3>
                     <p data-translate="hint_subtitle" class="text-sm text-slate-500 mb-4">Give our simulation a hint for a more accurate result.</p>
                     
-                    <!-- NEW: Shape Preview Container -->
-                    <div id="shape-preview-container" class="w-full h-24 mb-4 bg-slate-100 rounded-lg flex items-center justify-center p-2 transition-opacity duration-300 hidden">
-                        <!-- SVG shape will be injected here by JS -->
-                    </div>
-
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         <button data-hint="rajapalayam" data-translate="hint_rajapalayam" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">White coat, lean body</button>
                         <button data-hint="kombai" data-translate="hint_kombai" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">Reddish-brown coat</button>
@@ -166,7 +136,6 @@
                 top_match: 'Top Match',
                 confidence: 'Confidence',
                 other_possibilities: 'Other Possibilities',
-                shape_title: 'Typical Body Shape',
                 disclaimer_title: 'Disclaimer:',
                 disclaimer_text: 'This is a demonstration tool. The breed identification is simulated and may not be accurate. For a real identification, please consult a veterinarian or an animal expert.',
                 upload_error_type: 'Please upload an image file (PNG, JPG).',
@@ -192,7 +161,6 @@
                 top_match: 'ഏറ്റവും യോജിച്ചത്',
                 confidence: 'ആത്മവിശ്വാസം',
                 other_possibilities: 'മറ്റ് സാധ്യതകൾ',
-                shape_title: 'സാധാരണ ശരീരഘടന',
                 disclaimer_title: 'നിരാകരണം:',
                 disclaimer_text: 'ഇതൊരു ഡെമോൺസ്‌ട്രേഷൻ ടൂൾ ആണ്. ഇനം തിരിച്ചറിയൽ സിമുലേറ്റഡ് ആണ്, അത് കൃത്യമായിരിക്കണമെന്നില്ല. യഥാർത്ഥ തിരിച്ചറിയലിനായി, ദയവായി ഒരു മൃഗഡോക്ടറെയോ മൃഗ വിദഗ്ദ്ധനെയോ സമീപിക്കുക.',
                 upload_error_type: 'ദയവായി ഒരു ഇമേജ് ഫയൽ അപ്‌ലോഡ് ചെയ്യുക.',
@@ -200,25 +168,18 @@
             }
         };
 
-        const dogShapes = {
-            sighthound: `<svg viewBox="0 0 100 50" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M35,20 C45,10 55,10 65,20 L75,30 Q80,25 85,25 L95,26 M65,20 Q60,35 55,45 L53,48 M55,45 L45,35 Q40,30 35,20 M35,20 L30,22 L25,18 L20,25 Q15,20 10,22 L5,35 L8,48"/></svg>`,
-            bulky: `<svg viewBox="0 0 100 50" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M25,25 C30,15 50,15 60,25 Q80,30 85,40 L95,42 M60,25 C58,35 55,45 52,48 M55,45 C50,40 45,40 40,45 L38,48 M25,25 L20,22 L15,25 Q10,30 5,35 L8,48"/></svg>`,
-            standard: `<svg viewBox="0 0 100 50" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M30,20 C40,15 50,15 60,20 L70,25 Q75,25 80,30 L90,32 M60,20 C58,30 55,40 53,45 M55,40 L45,35 Q40,30 30,20 M30,20 L25,22 L20,18 L15,25 Q10,25 5,30 L8,45"/></svg>`,
-            small_fluffy: `<svg viewBox="0 0 100 50" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M30,30 C35,20 45,20 55,30 Q70,35 75,40 L85,42 M55,30 Q53,40 50,45 M50,45 C45,40 40,40 35,45 L33,48 M30,30 L25,28 L20,30 Q15,35 10,40 L12,48"/></svg>`
-        };
-
         const breeds = [
-            { id: 'indog', name: 'Indian Pariah Dog', name_ml: 'ഇന്ത്യൻ പരിയാ ഡോഗ്', shape: 'standard', description: 'The quintessential Indian street dog... Key features include a wedge-shaped head, pointed muzzle, erect ears, and a curved tail.', description_ml: 'ഇന്ത്യൻ തെരുവുകളുടെ തനതായ നായ... കൂർത്ത തല, നീണ്ട മുഖം, നിവർന്ന ചെവികൾ, വളഞ്ഞ വാൽ എന്നിവ പ്രധാന സവിശേഷതകളാണ്.', image: 'https://placehold.co/600x400/d2b48c/FFFFFF?text=Indog' },
-            { id: 'rajapalayam', name: 'Rajapalayam', name_ml: 'രാജപാളയം', shape: 'sighthound', description: 'A regal sighthound from Tamil Nadu... It has a stark milky-white coat, a pink nose, and pale eyes.', description_ml: 'തമിഴ്‌നാട്ടിൽ നിന്നുള്ള ഒരു രാജകീയ വേട്ടനായ... ഇതിന് തൂവെള്ള രോമങ്ങളും പിങ്ക് മൂക്കും വിളറിയ കണ്ണുകളുമുണ്ട്.', image: 'https://placehold.co/600x400/f5f5dc/333333?text=Rajapalayam' },
-            { id: 'kombai', name: 'Kombai', name_ml: 'കൊമ്പൈ', shape: 'standard', description: 'A powerful dog from Tamil Nadu... They have a distinctive reddish-brown coat with a black mask around the muzzle.', description_ml: 'തമിഴ്‌നാട്ടിൽ നിന്നുള്ള ശക്തനായ നായ... മുഖത്തിന് ചുറ്റും കറുത്ത മാസ്കും ചുവപ്പ് കലർന്ന തവിട്ടുനിറത്തിലുള്ള രോമങ്ങളുമുണ്ട്.', image: 'https://placehold.co/600x400/8b4513/FFFFFF?text=Kombai' },
-            { id: 'bakharwal', name: 'Bakharwal Dog', name_ml: 'ബഖർവാൾ ഡോഗ്', shape: 'bulky', description: 'A majestic livestock guardian... They are known for their thick, fluffy double coat.', description_ml: 'മഹത്വമുള്ള ഒരു കന്നുകാലി സംരക്ഷകൻ... കട്ടിയുള്ളതും മൃദുവായതുമായ ഇരട്ട രോമങ്ങൾക്ക് പേരുകേട്ടതാണ്.', image: 'https://placehold.co/600x400/a9a9a9/FFFFFF?text=Bakharwal' },
-            { id: 'mudhol', name: 'Mudhol Hound', name_ml: 'മുധോൾ ഹൗണ്ട്', shape: 'sighthound', description: 'An elegant sighthound... They have a long, narrow skull, lean body, and a whip-like tail.', description_ml: 'ഡെക്കാൻ പീഠഭൂമിയിൽ നിന്നുള്ള മനോഹരമായ വേട്ടനായ... നീളമുള്ള, ഇടുങ്ങിയ തലയോട്ടിയും മെലിഞ്ഞ ശരീരവും ചാട്ട പോലെയുള്ള വാലും ഇവയ്ക്കുണ്ട്.', image: 'https://placehold.co/600x400/c2b280/FFFFFF?text=Mudhol+Hound' },
-            { id: 'chippiparai', name: 'Chippiparai', name_ml: 'ചിപ്പിപ്പാറൈ', shape: 'sighthound', description: 'A sleek sighthound from Tamil Nadu... They have a slender, graceful body with a short, fine coat.', description_ml: 'തമിഴ്‌നാട്ടിൽ നിന്നുള്ള ഒരു സുന്ദരൻ വേട്ടനായ... നേർത്തതും ഭംഗിയുള്ളതുമായ ശരീരവും ചെറിയ, മിനുസമാർന്ന രോമങ്ങളുമുണ്ട്.', image: 'https://placehold.co/600x400/deb887/FFFFFF?text=Chippiparai' },
-            { id: 'gaddi', name: 'Gaddi Kutta', name_ml: 'ഗഡ്ഡി കുട്ട', shape: 'bulky', description: 'A powerful mastiff-type mountain dog... They possess great strength and a thick double coat.', description_ml: 'ശക്തനായ ഒരു മാസ്റ്റിഫ് ഇനം പർവത നായ... വലിയ ശക്തിയും കട്ടിയുള്ള ഇരട്ട രോമങ്ങളും ഇവയ്ക്കുണ്ട്.', image: 'https://placehold.co/600x400/2F4F4F/FFFFFF?text=Gaddi+Kutta' },
-            { id: 'kanni', name: 'Kanni', name_ml: 'കന്നി', shape: 'sighthound', description: 'A rare sighthound from Tamil Nadu... They typically have a black-and-tan coat.', description_ml: 'തമിഴ്‌നാട്ടിൽ നിന്നുള്ള ഒരു അപൂർവ വേട്ടനായ... സാധാരണയായി കറുപ്പും തവിട്ടുനിറവുമുള്ള രോമങ്ങളാണുള്ളത്.', image: 'https://placehold.co/600x400/4b3621/FFFFFF?text=Kanni' },
-            { id: 'rampur', name: 'Rampur Greyhound', name_ml: 'രാംപൂർ ഗ്രേഹൗണ്ട്', shape: 'sighthound', description: 'A powerful and athletic sighthound from the Rampur region... Larger and more robust than other greyhounds.', description_ml: 'രാംപൂർ മേഖലയിൽ നിന്നുള്ള ശക്തനും കായികക്ഷമതയുമുള്ള വേട്ടനായ... മറ്റ് ഗ്രേഹൗണ്ടുകളേക്കാൾ വലുതും കരുത്തുറ്റതുമാണ്.', image: 'https://placehold.co/600x400/808080/FFFFFF?text=Rampur+Greyhound' },
-            { id: 'spitz', name: 'Indian Spitz', name_ml: 'ഇന്ത്യൻ സ്പിറ്റ്സ്', shape: 'small_fluffy', description: 'Often mistaken for a Pomeranian... They have a pointed muzzle, erect ears, and a thick white coat.', description_ml: 'പോമറേനിയൻ ആണെന്ന് പലപ്പോഴും തെറ്റിദ്ധരിക്കാറുണ്ട്... കൂർത്ത മുഖവും നിവർന്ന ചെവികളും കട്ടിയുള്ള വെളുത്ത രോമങ്ങളുമുണ്ട്.', image: 'https://placehold.co/600x400/ffffff/333333?text=Indian+Spitz' },
-            { id: 'mixed', name: 'Mixed Breed', name_ml: 'സങ്കരയിനം', shape: 'standard', description: 'A beautiful dog with a unique heritage from multiple breeds... Their appearance can vary greatly.', description_ml: 'ഒന്നിലധികം ഇനങ്ങളിൽ നിന്നുള്ള സവിശേഷ പാരമ്പര്യമുള്ള ഒരു സുന്ദരനായ നായ... ഇവയുടെ രൂപം വളരെ വ്യത്യസ്തമായിരിക്കും.', image: 'https://placehold.co/600x400/9b7d6b/FFFFFF?text=Mixed+Breed' },
+            { id: 'indog', name: 'Indian Pariah Dog', name_ml: 'ഇന്ത്യൻ പരിയാ ഡോഗ്', description: 'The quintessential Indian street dog... Key features include a wedge-shaped head, pointed muzzle, erect ears, and a curved tail.', description_ml: 'ഇന്ത്യൻ തെരുവുകളുടെ തനതായ നായ... കൂർത്ത തല, നീണ്ട മുഖം, നിവർന്ന ചെവികൾ, വളഞ്ഞ വാൽ എന്നിവ പ്രധാന സവിശേഷതകളാണ്.', image: 'https://placehold.co/600x400/d2b48c/FFFFFF?text=Indog' },
+            { id: 'rajapalayam', name: 'Rajapalayam', name_ml: 'രാജപാളയം', description: 'A regal sighthound from Tamil Nadu... It has a stark milky-white coat, a pink nose, and pale eyes.', description_ml: 'തമിഴ്‌നാട്ടിൽ നിന്നുള്ള ഒരു രാജകീയ വേട്ടനായ... ഇതിന് തൂവെള്ള രോമങ്ങളും പിങ്ക് മൂക്കും വിളറിയ കണ്ണുകളുമുണ്ട്.', image: 'https://placehold.co/600x400/f5f5dc/333333?text=Rajapalayam' },
+            { id: 'kombai', name: 'Kombai', name_ml: 'കൊമ്പൈ', description: 'A powerful dog from Tamil Nadu... They have a distinctive reddish-brown coat with a black mask around the muzzle.', description_ml: 'തമിഴ്‌നാട്ടിൽ നിന്നുള്ള ശക്തനായ നായ... മുഖത്തിന് ചുറ്റും കറുത്ത മാസ്കും ചുവപ്പ് കലർന്ന തവിട്ടുനിറത്തിലുള്ള രോമങ്ങളുമുണ്ട്.', image: 'https://placehold.co/600x400/8b4513/FFFFFF?text=Kombai' },
+            { id: 'bakharwal', name: 'Bakharwal Dog', name_ml: 'ബഖർവാൾ ഡോഗ്', description: 'A majestic livestock guardian... They are known for their thick, fluffy double coat.', description_ml: 'മഹത്വമുള്ള ഒരു കന്നുകാലി സംരക്ഷകൻ... കട്ടിയുള്ളതും മൃദുവായതുമായ ഇരട്ട രോമങ്ങൾക്ക് പേരുകേട്ടതാണ്.', image: 'https://placehold.co/600x400/a9a9a9/FFFFFF?text=Bakharwal' },
+            { id: 'mudhol', name: 'Mudhol Hound', name_ml: 'മുധോൾ ഹൗണ്ട്', description: 'An elegant sighthound... They have a long, narrow skull, lean body, and a whip-like tail.', description_ml: 'ഡെക്കാൻ പീഠഭൂമിയിൽ നിന്നുള്ള മനോഹരമായ വേട്ടനായ... നീളമുള്ള, ഇടുങ്ങിയ തലയോട്ടിയും മെലിഞ്ഞ ശരീരവും ചാട്ട പോലെയുള്ള വാലും ഇവയ്ക്കുണ്ട്.', image: 'https://placehold.co/600x400/c2b280/FFFFFF?text=Mudhol+Hound' },
+            { id: 'chippiparai', name: 'Chippiparai', name_ml: 'ചിപ്പിപ്പാറൈ', description: 'A sleek sighthound from Tamil Nadu... They have a slender, graceful body with a short, fine coat.', description_ml: 'തമിഴ്‌നാട്ടിൽ നിന്നുള്ള ഒരു സുന്ദരൻ വേട്ടനായ... നേർത്തതും ഭംഗിയുള്ളതുമായ ശരീരവും ചെറിയ, മിനുസമാർന്ന രോമങ്ങളുമുണ്ട്.', image: 'https://placehold.co/600x400/deb887/FFFFFF?text=Chippiparai' },
+            { id: 'gaddi', name: 'Gaddi Kutta', name_ml: 'ഗഡ്ഡി കുട്ട', description: 'A powerful mastiff-type mountain dog... They possess great strength and a thick double coat.', description_ml: 'ശക്തനായ ഒരു മാസ്റ്റിഫ് ഇനം പർവത നായ... വലിയ ശക്തിയും കട്ടിയുള്ള ഇരട്ട രോമങ്ങളും ഇവയ്ക്കുണ്ട്.', image: 'https://placehold.co/600x400/2F4F4F/FFFFFF?text=Gaddi+Kutta' },
+            { id: 'kanni', name: 'Kanni', name_ml: 'കന്നി', description: 'A rare sighthound from Tamil Nadu... They typically have a black-and-tan coat.', description_ml: 'തമിഴ്‌നാട്ടിൽ നിന്നുള്ള ഒരു അപൂർവ വേട്ടനായ... സാധാരണയായി കറുപ്പും തവിട്ടുനിറവുമുള്ള രോമങ്ങളാണുള്ളത്.', image: 'https://placehold.co/600x400/4b3621/FFFFFF?text=Kanni' },
+            { id: 'rampur', name: 'Rampur Greyhound', name_ml: 'രാംപൂർ ഗ്രേഹൗണ്ട്', description: 'A powerful and athletic sighthound from the Rampur region... Larger and more robust than other greyhounds.', description_ml: 'രാംപൂർ മേഖലയിൽ നിന്നുള്ള ശക്തനും കായികക്ഷമതയുമുള്ള വേട്ടനായ... മറ്റ് ഗ്രേഹൗണ്ടുകളേക്കാൾ വലുതും കരുത്തുറ്റതുമാണ്.', image: 'https://placehold.co/600x400/808080/FFFFFF?text=Rampur+Greyhound' },
+            { id: 'spitz', name: 'Indian Spitz', name_ml: 'ഇന്ത്യൻ സ്പിറ്റ്സ്', description: 'Often mistaken for a Pomeranian... They have a pointed muzzle, erect ears, and a thick white coat.', description_ml: 'പോമറേനിയൻ ആണെന്ന് പലപ്പോഴും തെറ്റിദ്ധരിക്കാറുണ്ട്... കൂർത്ത മുഖവും നിവർന്ന ചെവികളും കട്ടിയുള്ള വെളുത്ത രോമങ്ങളുമുണ്ട്.', image: 'https://placehold.co/600x400/ffffff/333333?text=Indian+Spitz' },
+            { id: 'mixed', name: 'Mixed Breed', name_ml: 'സങ്കരയിനം', description: 'A beautiful dog with a unique heritage from multiple breeds... Their appearance can vary greatly.', description_ml: 'ഒന്നിലധികം ഇനങ്ങളിൽ നിന്നുള്ള സവിശേഷ പാരമ്പര്യമുള്ള ഒരു സുന്ദരനായ നായ... ഇവയുടെ രൂപം വളരെ വ്യത്യസ്തമായിരിക്കും.', image: 'https://placehold.co/600x400/9b7d6b/FFFFFF?text=Mixed+Breed' },
         ];
 
         const uploadArea = document.getElementById('upload-area');
@@ -234,8 +195,7 @@
         const langEnBtn = document.getElementById('lang-en');
         const langMlBtn = document.getElementById('lang-ml');
         const uploadError = document.getElementById('upload-error');
-        const shapePreviewContainer = document.getElementById('shape-preview-container');
-
+        
         function updateLanguage(lang) {
             currentLang = lang;
             document.querySelectorAll('[data-translate]').forEach(el => {
@@ -317,37 +277,11 @@
 
         removeImageBtn.addEventListener('click', hidePreview);
         
-        // --- Analysis Logic ---
         analysisOptions.addEventListener('click', (e) => {
             if (e.target.tagName === 'BUTTON') {
                 startAnalysis(e.target.dataset.hint);
             }
         });
-
-        // --- NEW: Hint Hover Preview Logic ---
-        const hintButtons = analysisOptions.querySelectorAll('button[data-hint]');
-        hintButtons.forEach(button => {
-            button.addEventListener('mouseenter', () => {
-                const hint = button.dataset.hint;
-                if (hint === 'general') {
-                    shapePreviewContainer.classList.add('hidden');
-                    return;
-                }
-                const breed = breeds.find(b => b.id === hint);
-                if (breed && breed.shape) {
-                    const shapeSvg = dogShapes[breed.shape];
-                    if (shapeSvg) {
-                        shapePreviewContainer.innerHTML = shapeSvg;
-                        shapePreviewContainer.classList.remove('hidden');
-                    }
-                }
-            });
-            button.addEventListener('mouseleave', () => {
-                shapePreviewContainer.classList.add('hidden');
-                shapePreviewContainer.innerHTML = '';
-            });
-        });
-
 
         function startAnalysis(hint) {
             resultSection.classList.remove('hidden');
@@ -380,8 +314,6 @@
             const thirdConf = Math.floor(Math.random() * 16) + 40;
             loaderContainer.style.display = 'none';
 
-            const shapeSvg = dogShapes[top.shape] || '';
-
             const topMatchHtml = `
                 <h2 class="text-2xl font-bold text-slate-800 mb-4" data-translate="result_title">${translations[currentLang].result_title}</h2>
                 <div class="bg-blue-50 border border-blue-200 p-4 md:p-6 rounded-lg text-left mb-6">
@@ -389,10 +321,6 @@
                     <div class="md:flex md:items-start md:gap-6">
                         <div class="w-full md:w-1/2">
                              <img src="${top.image}" alt="Image of ${top.name}" class="w-full h-auto rounded-md shadow-sm mb-4">
-                             <h4 class="font-semibold text-sm text-slate-600 mb-2" data-translate="shape_title">${translations[currentLang].shape_title}</h4>
-                             <div id="dog-animation-container" class="w-full h-auto bg-slate-200 rounded-lg flex items-center justify-center p-2">
-                                ${shapeSvg}
-                             </div>
                         </div>
                         <div class="md:w-1/2">
                             <h3 class="text-2xl font-bold text-blue-800">${currentLang === 'ml' ? top.name_ml : top.name}</h3>
@@ -426,6 +354,7 @@
     </script>
 </body>
 </html>
+
 
 
 
