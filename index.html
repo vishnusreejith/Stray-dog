@@ -85,14 +85,16 @@
                     <h3 data-translate="hint_title" class="text-lg font-semibold text-slate-800 mb-3">What does the dog look like?</h3>
                     <p data-translate="hint_subtitle" class="text-sm text-slate-500 mb-4">Give our simulation a hint for a more accurate result.</p>
                     
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <button data-hint="rajapalayam" data-translate="hint_rajapalayam" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">White coat, lean body</button>
                         <button data-hint="kombai" data-translate="hint_kombai" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">Reddish-brown coat</button>
                         <button data-hint="bakharwal" data-translate="hint_bakharwal" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">Fluffy, heavy coat</button>
                         <button data-hint="kanni" data-translate="hint_kanni" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">Black & Tan coat</button>
                         <button data-hint="mudhol" data-translate="hint_mudhol" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">Lean, athletic body</button>
                         <button data-hint="spitz" data-translate="hint_spitz" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">Small & fluffy, white</button>
-                        <button data-hint="general" data-translate="hint_general" class="col-span-2 sm:col-span-3 w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition-all duration-300 text-sm">Unsure / Other</button>
+                        <button data-hint="jonangi" data-translate="hint_jonangi" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">Wrinkled forehead</button>
+                        <button data-hint="alangu" data-translate="hint_alangu" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">Very large, muscular</button>
+                        <button data-hint="general" data-translate="hint_general" class="col-span-2 sm:col-span-4 w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition-all duration-300 text-sm">Unsure / Other</button>
                     </div>
                 </div>
             </div>
@@ -130,6 +132,8 @@
                 hint_kanni: 'Black & Tan coat',
                 hint_mudhol: 'Lean, athletic body',
                 hint_spitz: 'Small & fluffy, white',
+                hint_jonangi: 'Wrinkled forehead',
+                hint_alangu: 'Very large, muscular',
                 hint_general: 'Unsure / Other',
                 loader_text: 'Analyzing photo...',
                 result_title: 'Analysis Complete',
@@ -142,7 +146,7 @@
                 upload_error_read: 'There was an error reading the file.'
             },
             ml: {
-                title: 'അലഞ്ഞുതിരിയുന്ന നായ്ക്കളെ തിരിച്ചറിയാം',
+                title: 'തെരുവ് നായ്ക്കളുടെ ജാതിവൈവിധ്യം തിരിച്ചറിയാം',
                 subtitle: 'ഒരു ഇന്ത്യൻ തെരുവ് നായയുടെ ഇനം തിരിച്ചറിയാൻ ഒരു ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുക.',
                 upload_text: 'അപ്‌ലോഡ് ചെയ്യാൻ ക്ലിക്ക് ചെയ്യുക അല്ലെങ്കിൽ ഡ്രാഗ് & ഡ്രോപ്പ് ചെയ്യുക',
                 upload_subtext: 'PNG, JPG, അല്ലെങ്കിൽ WEBP',
@@ -155,6 +159,8 @@
                 hint_kanni: 'കറുപ്പും തവിട്ടുനിറവും',
                 hint_mudhol: 'മെലിഞ്ഞ, കായിക ശരീരം',
                 hint_spitz: 'ചെറുതും വെളുത്തതും',
+                hint_jonangi: 'ചുളിവുകളുള്ള നെറ്റി',
+                hint_alangu: 'വളരെ വലുത്, പേശികളുള്ളത്',
                 hint_general: 'ഉറപ്പില്ല / മറ്റുള്ളവ',
                 loader_text: 'ഫോട്ടോ വിശകലനം ചെയ്യുന്നു...',
                 result_title: 'വിശകലനം പൂർത്തിയായി',
@@ -179,6 +185,10 @@
             { id: 'kanni', name: 'Kanni', name_ml: 'കന്നി', description: 'A rare and refined sighthound, closely related to the Chippiparai. They are known for their classic black-and-tan coat pattern. They have a graceful build, long legs, and a shy but loyal temperament.', description_ml: 'ചിപ്പിപ്പാറൈയുമായി അടുത്ത ബന്ധമുള്ള ഒരു അപൂർവയിനം വേട്ടനായ. കറുപ്പും തവിട്ടുനിറവുമുള്ള രോമങ്ങളാണ് ഇവയുടെ ക്ലാസിക് രൂപം. മനോഹരമായ ശരീരവും നീണ്ട കാലുകളും ലജ്ജാശീലവും എന്നാൽ വിശ്വസ്തവുമായ സ്വഭാവവുമുണ്ട്.', image: 'https://placehold.co/600x400/4b3621/FFFFFF?text=Kanni' },
             { id: 'rampur', name: 'Rampur Greyhound', name_ml: 'രാംപൂർ ഗ്രേഹൗണ്ട്', description: 'A large, powerful sighthound built more robustly than other greyhounds. They have a short coat, often in mouse-grey, brindle, or black, and possess incredible speed over short distances.', description_ml: 'മറ്റ് ഗ്രേഹൗണ്ടുകളേക്കാൾ കരുത്തുറ്റ ശരീരമുള്ള ഒരു വലിയ വേട്ടനായ. ചെറിയ രോമങ്ങൾ, പലപ്പോഴും ചാരനിറത്തിലോ വരകളോടുകൂടിയോ കറുപ്പ് നിറത്തിലോ കാണപ്പെടുന്നു. കുറഞ്ഞ ദൂരത്തിൽ അവിശ്വസനീയമായ വേഗതയുണ്ട്.', image: 'https://placehold.co/600x400/808080/FFFFFF?text=Rampur+Greyhound' },
             { id: 'spitz', name: 'Indian Spitz', name_ml: 'ഇന്ത്യൻ സ്പിറ്റ്സ്', description: 'A small, fluffy companion dog resembling a Pomeranian but slightly larger. Key features are a pointed muzzle, erect triangular ears, a thick white coat, and a plumed tail that curls over the back.', description_ml: 'പോമറേനിയനോട് സാമ്യമുള്ളതും എന്നാൽ അല്പം വലുതുമായ ഒരു ചെറിയ സഹചാരി നായ. കൂർത്ത മുഖം, നിവർന്ന ത്രികോണാകൃതിയിലുള്ള ചെവികൾ, കട്ടിയുള്ള വെളുത്ത രോമങ്ങൾ, പുറകിലേക്ക് വളഞ്ഞ വാൽ എന്നിവയാണ് പ്രധാന സവിശേഷതകൾ.', image: 'https://placehold.co/600x400/ffffff/333333?text=Indian+Spitz' },
+            { id: 'alangu', name: 'Alangu Mastiff', name_ml: 'അലങ്കു മാസ്റ്റിഫ്', description: 'Also known as the Bully Kutta, this is a very large and powerful mastiff. Known for its muscular build, loose skin around the neck, short coat, and dominant temperament. Requires experienced handling.', description_ml: 'ബുള്ളി കുട്ട എന്നും അറിയപ്പെടുന്ന ഇത് വളരെ വലുതും ശക്തനുമായ ഒരു മാസ്റ്റിഫാണ്. പേശികളോടുകൂടിയ ശരീരത്തിനും കഴുത്തിന് ചുറ്റുമുള്ള അയഞ്ഞ ചർമ്മത്തിനും പേരുകേട്ടതാണ്. പരിചയസമ്പന്നമായ കൈകാര്യം ചെയ്യൽ ആവശ്യമാണ്.', image: 'https://placehold.co/600x400/DEB887/FFFFFF?text=Alangu+Mastiff' },
+            { id: 'jonangi', name: 'Jonangi', name_ml: 'ജോനാംഗി', description: 'A unique dog with a wrinkled forehead and a very short, fine coat. They are known for digging burrows and a distinctive "yodeling" sound instead of barking. Found along the coasts of Andhra Pradesh.', description_ml: 'ചുളിവുകളുള്ള നെറ്റിയും വളരെ ചെറിയ രോമങ്ങളുമുള്ള ഒരു സവിശേഷ ഇന്ത്യൻ നായ. കുഴികൾ കുഴിക്കുന്നതിനും കുരയ്ക്കുന്നതിന് പകരം "യോഡലിംഗ്" ശബ്ദമുണ്ടാക്കുന്നതിനും പേരുകേട്ടതാണ്. ആന്ധ്രാപ്രദേശിന്റെ തീരങ്ങളിൽ കാണപ്പെടുന്നു.', image: 'https://placehold.co/600x400/964B00/FFFFFF?text=Jonangi' },
+            { id: 'pandikona', name: 'Pandikona', name_ml: 'പണ്ടികോന', description: 'A primitive hunting dog from Andhra Pradesh. They are medium-sized with a short, harsh coat, often fawn or tan. Known for their stamina, guarding instincts, and ability to survive on little food.', description_ml: 'ആന്ധ്രാപ്രദേശിൽ നിന്നുള്ള ഒരു വേട്ടപ്പട്ടി. ഇടത്തരം വലിപ്പമുള്ള ഇവയ്ക്ക് ചെറുതും പരുക്കനുമായ രോമങ്ങളുണ്ട്. സഹനശക്തിക്കും കാവൽ കഴിവുകൾക്കും പേരുകേട്ടതാണ്.', image: 'https://placehold.co/600x400/b5651d/FFFFFF?text=Pandikona' },
+            { id: 'vikhan', name: 'Vikhan Sheepdog', name_ml: 'വിഖാൻ ഷീപ്പ്ഡോഗ്', description: 'A shaggy, agile sheepdog from the Himalayan region. They have a long, thick coat to protect them from the harsh mountain climate and are excellent herders, similar to a Gaddi Kutta but smaller.', description_ml: 'ഹിമാലയൻ പ്രദേശത്ത് നിന്നുള്ള രോമങ്ങളുള്ള ഒരു ആട്ടിടയൻ നായ. പർവതങ്ങളിലെ കഠിനമായ കാലാവസ്ഥയിൽ നിന്ന് സംരക്ഷിക്കാൻ നീളമുള്ളതും കട്ടിയുള്ളതുമായ രോമങ്ങളുണ്ട്.', image: 'https://placehold.co/600x400/696969/FFFFFF?text=Vikhan' },
             { id: 'mixed', name: 'Mixed Breed', name_ml: 'സങ്കരയിനം', description: 'A beautiful dog with a unique heritage from multiple breeds. Their appearance, size, and temperament can vary greatly, showcasing a wonderful mix of traits from their diverse ancestry.', description_ml: 'ഒന്നിലധികം ഇനങ്ങളിൽ നിന്നുള്ള സവിശേഷ പാരമ്പര്യമുള്ള ഒരു സുന്ദരനായ നായ. ഇവയുടെ രൂപം, വലുപ്പം, സ്വഭാവം എന്നിവ വളരെ വ്യത്യസ്തമായിരിക്കും, ഇത് അവരുടെ വൈവിധ്യമാർന്ന പാരമ്പര്യത്തിന്റെ മനോഹരമായ മിശ്രിതം കാണിക്കുന്നു.', image: 'https://placehold.co/600x400/9b7d6b/FFFFFF?text=Mixed+Breed' },
         ];
 
@@ -354,6 +364,7 @@
     </script>
 </body>
 </html>
+
 
 
 
