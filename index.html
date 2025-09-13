@@ -38,7 +38,7 @@
 
     <div class="w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6 md:p-10 relative">
         <!-- Language Switcher -->
-        <div id="lang-switcher" class="absolute top-4 right-4 flex gap-1 bg-slate-100 p-1 rounded-lg">
+        <div id="lang-switcher" class="absolute top-4 right-4 flex gap-1 bg-slate-100 p-1 rounded-lg z-10">
             <button id="lang-en" class="px-3 py-1 text-sm font-semibold rounded-md bg-blue-600 text-white transition-colors">English</button>
             <button id="lang-ml" class="px-3 py-1 text-sm font-semibold rounded-md bg-transparent text-slate-600 transition-colors">മലയാളം</button>
         </div>
@@ -52,6 +52,14 @@
         </header>
 
         <main>
+            <!-- NEW: Cover Image Section -->
+            <div class="mb-8">
+                <img src="https://images.unsplash.com/photo-1623757433233-3a0338a22146?q=80&w=1200&auto=format&fit=crop" 
+                     alt="A friendly Indian dog looking at the camera" 
+                     class="w-full h-64 object-cover rounded-xl shadow-lg"
+                     onerror="this.onerror=null;this.src='https://placehold.co/1200x400/9ca3af/ffffff?text=Image+of+a+friendly+dog';">
+            </div>
+
             <!-- File Upload Section -->
             <div id="upload-container">
                 <label for="dog-photo-upload" class="cursor-pointer">
@@ -364,6 +372,8 @@
     </script>
 </body>
 </html>
+
+
 
 
 
