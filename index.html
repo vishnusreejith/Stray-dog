@@ -9,6 +9,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
         }
         .upload-area {
             border: 2px dashed #cbd5e1;
@@ -30,17 +31,49 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        @keyframes fadeInShape {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Style for the main result animation */
+        #dog-animation-container svg {
+            width: 100%;
+            height: auto;
+            max-height: 120px;
+            opacity: 0;
+            transform-origin: center;
+            animation: fadeInShape 0.8s ease-out forwards;
+            animation-delay: 0.2s; /* Delay to appear after the rest of the content */
+        }
+
+        /* NEW: Style for the hover preview animation */
+        #shape-preview-container svg {
+            width: 100%;
+            height: auto;
+            max-height: 80px;
+            opacity: 0;
+            transform-origin: center;
+            animation: fadeInShape 0.4s ease-out forwards;
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 flex flex-col items-center justify-center min-h-screen p-4">
+<body class="bg-slate-50 text-slate-800 flex flex-col items-center min-h-screen p-4">
 
-    <div class="w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6 md:p-10">
-        <header class="text-center mb-8">
+    <div class="w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6 md:p-10 relative">
+        <!-- Language Switcher -->
+        <div id="lang-switcher" class="absolute top-4 right-4 flex gap-1 bg-slate-100 p-1 rounded-lg">
+            <button id="lang-en" class="px-3 py-1 text-sm font-semibold rounded-md bg-blue-600 text-white transition-colors">English</button>
+            <button id="lang-ml" class="px-3 py-1 text-sm font-semibold rounded-md bg-transparent text-slate-600 transition-colors">മലയാളം</button>
+        </div>
+
+        <header class="text-center mb-8 pt-10">
             <div class="flex items-center justify-center gap-3 mb-2">
                  <svg class="w-10 h-10 text-amber-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.2495 16.3213C11.1666 16.313 11.079 16.3093 11 16.3093C10.921 16.3093 10.8334 16.313 10.7505 16.3213C7.03281 16.7112 4.50002 18.2936 4.50002 20.0633V20.4998H17.5V20.0633C17.5 18.2936 14.9672 16.7112 11.2495 16.3213ZM11 15.0001C14.3137 15.0001 17 12.3138 17 9.00009C17 5.68638 14.3137 3.00009 11 3.00009C7.68629 3.00009 5 5.68638 5 9.00009C5 12.3138 7.68629 15.0001 11 15.0001ZM11 13.0001C8.79086 13.0001 7 11.2092 7 9.00009C7 6.79095 8.79086 5.00009 11 5.00009C13.2091 5.00009 15 6.79095 15 9.00009C15 11.2092 13.2091 13.0001 11 13.0001Z"></path></svg>
-                <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Stray Paws Identifier</h1>
+                <h1 data-translate="title" class="text-3xl md:text-4xl font-bold text-slate-900">Stray Paws Identifier</h1>
             </div>
-            <p class="text-slate-500 mt-2">Upload a photo to identify the breed of an Indian stray dog.</p>
+            <p data-translate="subtitle" class="text-slate-500 mt-2">Upload a photo to identify the breed of an Indian stray dog.</p>
         </header>
 
         <main>
@@ -51,18 +84,19 @@
                         <input type="file" id="dog-photo-upload" class="hidden" accept="image/*">
                         <div class="flex flex-col items-center justify-center">
                             <svg class="w-16 h-16 text-slate-400 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l-3.75 3.75M12 9.75l3.75 3.75M3 17.25V6.75A2.25 2.25 0 015.25 4.5h13.5A2.25 2.25 0 0121 6.75v10.5A2.25 2.25 0 0118.75 19.5H5.25A2.25 2.25 0 013 17.25z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l-3-3.75M12 9.75l3 3.75M3 17.25V6.75A2.25 2.25 0 015.25 4.5h13.5A2.25 2.25 0 0121 6.75v10.5A2.25 2.25 0 0118.75 19.5H5.25A2.25 2.25 0 013 17.25z" />
                             </svg>
-                            <p class="font-semibold text-slate-700">Click to upload or drag and drop</p>
-                            <p class="text-sm text-slate-500">PNG, JPG, or WEBP</p>
+                            <p data-translate="upload_text" class="font-semibold text-slate-700">Click to upload or drag and drop</p>
+                            <p data-translate="upload_subtext" class="text-sm text-slate-500">PNG, JPG, or WEBP</p>
                         </div>
                     </div>
                 </label>
+                <p id="upload-error" class="text-red-500 text-sm mt-2 text-center hidden"></p>
             </div>
 
             <!-- Image Preview Section -->
             <div id="preview-container" class="hidden mt-6 text-center">
-                <h2 class="text-xl font-semibold mb-4 text-slate-700">Image Preview</h2>
+                <h2 data-translate="preview_title" class="text-xl font-semibold mb-4 text-slate-700">Your Uploaded Image</h2>
                 <div class="relative inline-block">
                     <img id="image-preview" src="" alt="Preview of uploaded dog photo" class="max-w-full h-auto max-h-80 rounded-lg shadow-md">
                     <button id="remove-image-btn" class="absolute -top-3 -right-3 bg-white rounded-full p-1.5 shadow-lg text-slate-600 hover:text-red-500 hover:scale-110 transition-transform">
@@ -71,46 +105,161 @@
                         </svg>
                     </button>
                 </div>
-                <button id="identify-btn" class="mt-6 w-full md:w-auto bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300">
-                    Identify Dog
-                </button>
+                
+                <div id="analysis-options" class="mt-6 border-t pt-6">
+                    <h3 data-translate="hint_title" class="text-lg font-semibold text-slate-800 mb-3">What does the dog look like?</h3>
+                    <p data-translate="hint_subtitle" class="text-sm text-slate-500 mb-4">Give our simulation a hint for a more accurate result.</p>
+                    
+                    <!-- NEW: Shape Preview Container -->
+                    <div id="shape-preview-container" class="w-full h-24 mb-4 bg-slate-100 rounded-lg flex items-center justify-center p-2 transition-opacity duration-300 hidden">
+                        <!-- SVG shape will be injected here by JS -->
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <button data-hint="rajapalayam" data-translate="hint_rajapalayam" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">White coat, lean body</button>
+                        <button data-hint="kombai" data-translate="hint_kombai" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">Reddish-brown coat</button>
+                        <button data-hint="bakharwal" data-translate="hint_bakharwal" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">Fluffy, heavy coat</button>
+                        <button data-hint="kanni" data-translate="hint_kanni" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">Black & Tan coat</button>
+                        <button data-hint="mudhol" data-translate="hint_mudhol" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">Lean, athletic body</button>
+                        <button data-hint="spitz" data-translate="hint_spitz" class="w-full bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-lg hover:bg-slate-300 transition-all duration-300 text-sm">Small & fluffy, white</button>
+                        <button data-hint="general" data-translate="hint_general" class="col-span-2 sm:col-span-3 w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition-all duration-300 text-sm">Unsure / Other</button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Loading & Results Section -->
             <div id="result-section" class="mt-8 text-center hidden">
                 <div id="loader-container" class="flex justify-center items-center">
                     <div class="loader"></div>
-                    <p class="ml-4 text-slate-600 font-medium">Analyzing photo...</p>
+                    <p data-translate="loader_text" class="ml-4 text-slate-600 font-medium">Analyzing photo...</p>
                 </div>
                 
-                <div id="result-content" class="hidden">
-                    <!-- Result content will be injected here by JavaScript -->
-                </div>
+                <div id="result-content" class="hidden"></div>
             </div>
 
-            <!-- Disclaimer -->
             <div class="mt-10 text-center text-xs text-slate-400">
-                <p><strong>Disclaimer:</strong> This is a demonstration tool. The breed identification is simulated and may not be accurate. For a real identification, please consult a veterinarian or an animal expert.</p>
+                <p><strong data-translate="disclaimer_title">Disclaimer:</strong> <span data-translate="disclaimer_text">This is a demonstration tool. The breed identification is simulated and may not be accurate. For a real identification, please consult a veterinarian or an animal expert.</span></p>
             </div>
         </main>
     </div>
 
     <script>
+        let currentLang = 'en';
+
+        const translations = {
+            en: {
+                title: 'Stray Paws Identifier',
+                subtitle: 'Upload a photo to identify the breed of an Indian stray dog.',
+                upload_text: 'Click to upload or drag and drop',
+                upload_subtext: 'PNG, JPG, or WEBP',
+                preview_title: 'Your Uploaded Image',
+                hint_title: 'What does the dog look like?',
+                hint_subtitle: 'Give our simulation a hint for a more accurate result.',
+                hint_rajapalayam: 'White coat, lean body',
+                hint_kombai: 'Reddish-brown coat',
+                hint_bakharwal: 'Fluffy, heavy coat',
+                hint_kanni: 'Black & Tan coat',
+                hint_mudhol: 'Lean, athletic body',
+                hint_spitz: 'Small & fluffy, white',
+                hint_general: 'Unsure / Other',
+                loader_text: 'Analyzing photo...',
+                result_title: 'Analysis Complete',
+                top_match: 'Top Match',
+                confidence: 'Confidence',
+                other_possibilities: 'Other Possibilities',
+                shape_title: 'Typical Body Shape',
+                disclaimer_title: 'Disclaimer:',
+                disclaimer_text: 'This is a demonstration tool. The breed identification is simulated and may not be accurate. For a real identification, please consult a veterinarian or an animal expert.',
+                upload_error_type: 'Please upload an image file (PNG, JPG).',
+                upload_error_read: 'There was an error reading the file.'
+            },
+            ml: {
+                title: 'അലഞ്ഞുതിരിയുന്ന നായ്ക്കളെ തിരിച്ചറിയാം',
+                subtitle: 'ഒരു ഇന്ത്യൻ തെരുവ് നായയുടെ ഇനം തിരിച്ചറിയാൻ ഒരു ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുക.',
+                upload_text: 'അപ്‌ലോഡ് ചെയ്യാൻ ക്ലിക്ക് ചെയ്യുക അല്ലെങ്കിൽ ഡ്രാഗ് & ഡ്രോപ്പ് ചെയ്യുക',
+                upload_subtext: 'PNG, JPG, അല്ലെങ്കിൽ WEBP',
+                preview_title: 'നിങ്ങൾ അപ്‌ലോഡ് ചെയ്ത ചിത്രം',
+                hint_title: 'നായയെ കാണാൻ എങ്ങനെയാണ്?',
+                hint_subtitle: 'കൃത്യമായ ഫലത്തിനായി ഞങ്ങളുടെ സിമുലേഷന് ഒരു സൂചന നൽകുക.',
+                hint_rajapalayam: 'വെളുത്ത രോമം, മെലിഞ്ഞ ശരീരം',
+                hint_kombai: 'ചുവപ്പ് കലർന്ന തവിട്ടുനിറം',
+                hint_bakharwal: 'അധികം രോമമുള്ള ശരീരം',
+                hint_kanni: 'കറുപ്പും തവിട്ടുനിറവും',
+                hint_mudhol: 'മെലിഞ്ഞ, കായിക ശരീരം',
+                hint_spitz: 'ചെറുതും വെളുത്തതും',
+                hint_general: 'ഉറപ്പില്ല / മറ്റുള്ളവ',
+                loader_text: 'ഫോട്ടോ വിശകലനം ചെയ്യുന്നു...',
+                result_title: 'വിശകലനം പൂർത്തിയായി',
+                top_match: 'ഏറ്റവും യോജിച്ചത്',
+                confidence: 'ആത്മവിശ്വാസം',
+                other_possibilities: 'മറ്റ് സാധ്യതകൾ',
+                shape_title: 'സാധാരണ ശരീരഘടന',
+                disclaimer_title: 'നിരാകരണം:',
+                disclaimer_text: 'ഇതൊരു ഡെമോൺസ്‌ട്രേഷൻ ടൂൾ ആണ്. ഇനം തിരിച്ചറിയൽ സിമുലേറ്റഡ് ആണ്, അത് കൃത്യമായിരിക്കണമെന്നില്ല. യഥാർത്ഥ തിരിച്ചറിയലിനായി, ദയവായി ഒരു മൃഗഡോക്ടറെയോ മൃഗ വിദഗ്ദ്ധനെയോ സമീപിക്കുക.',
+                upload_error_type: 'ദയവായി ഒരു ഇമേജ് ഫയൽ അപ്‌ലോഡ് ചെയ്യുക.',
+                upload_error_read: 'ഫയൽ വായിക്കുന്നതിൽ പിശകുണ്ടായി.'
+            }
+        };
+
+        const dogShapes = {
+            sighthound: `<svg viewBox="0 0 100 50" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M35,20 C45,10 55,10 65,20 L75,30 Q80,25 85,25 L95,26 M65,20 Q60,35 55,45 L53,48 M55,45 L45,35 Q40,30 35,20 M35,20 L30,22 L25,18 L20,25 Q15,20 10,22 L5,35 L8,48"/></svg>`,
+            bulky: `<svg viewBox="0 0 100 50" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M25,25 C30,15 50,15 60,25 Q80,30 85,40 L95,42 M60,25 C58,35 55,45 52,48 M55,45 C50,40 45,40 40,45 L38,48 M25,25 L20,22 L15,25 Q10,30 5,35 L8,48"/></svg>`,
+            standard: `<svg viewBox="0 0 100 50" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M30,20 C40,15 50,15 60,20 L70,25 Q75,25 80,30 L90,32 M60,20 C58,30 55,40 53,45 M55,40 L45,35 Q40,30 30,20 M30,20 L25,22 L20,18 L15,25 Q10,25 5,30 L8,45"/></svg>`,
+            small_fluffy: `<svg viewBox="0 0 100 50" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M30,30 C35,20 45,20 55,30 Q70,35 75,40 L85,42 M55,30 Q53,40 50,45 M50,45 C45,40 40,40 35,45 L33,48 M30,30 L25,28 L20,30 Q15,35 10,40 L12,48"/></svg>`
+        };
+
+        const breeds = [
+            { id: 'indog', name: 'Indian Pariah Dog', name_ml: 'ഇന്ത്യൻ പരിയാ ഡോഗ്', shape: 'standard', description: 'The quintessential Indian street dog... Key features include a wedge-shaped head, pointed muzzle, erect ears, and a curved tail.', description_ml: 'ഇന്ത്യൻ തെരുവുകളുടെ തനതായ നായ... കൂർത്ത തല, നീണ്ട മുഖം, നിവർന്ന ചെവികൾ, വളഞ്ഞ വാൽ എന്നിവ പ്രധാന സവിശേഷതകളാണ്.', image: 'https://placehold.co/600x400/d2b48c/FFFFFF?text=Indog' },
+            { id: 'rajapalayam', name: 'Rajapalayam', name_ml: 'രാജപാളയം', shape: 'sighthound', description: 'A regal sighthound from Tamil Nadu... It has a stark milky-white coat, a pink nose, and pale eyes.', description_ml: 'തമിഴ്‌നാട്ടിൽ നിന്നുള്ള ഒരു രാജകീയ വേട്ടനായ... ഇതിന് തൂവെള്ള രോമങ്ങളും പിങ്ക് മൂക്കും വിളറിയ കണ്ണുകളുമുണ്ട്.', image: 'https://placehold.co/600x400/f5f5dc/333333?text=Rajapalayam' },
+            { id: 'kombai', name: 'Kombai', name_ml: 'കൊമ്പൈ', shape: 'standard', description: 'A powerful dog from Tamil Nadu... They have a distinctive reddish-brown coat with a black mask around the muzzle.', description_ml: 'തമിഴ്‌നാട്ടിൽ നിന്നുള്ള ശക്തനായ നായ... മുഖത്തിന് ചുറ്റും കറുത്ത മാസ്കും ചുവപ്പ് കലർന്ന തവിട്ടുനിറത്തിലുള്ള രോമങ്ങളുമുണ്ട്.', image: 'https://placehold.co/600x400/8b4513/FFFFFF?text=Kombai' },
+            { id: 'bakharwal', name: 'Bakharwal Dog', name_ml: 'ബഖർവാൾ ഡോഗ്', shape: 'bulky', description: 'A majestic livestock guardian... They are known for their thick, fluffy double coat.', description_ml: 'മഹത്വമുള്ള ഒരു കന്നുകാലി സംരക്ഷകൻ... കട്ടിയുള്ളതും മൃദുവായതുമായ ഇരട്ട രോമങ്ങൾക്ക് പേരുകേട്ടതാണ്.', image: 'https://placehold.co/600x400/a9a9a9/FFFFFF?text=Bakharwal' },
+            { id: 'mudhol', name: 'Mudhol Hound', name_ml: 'മുധോൾ ഹൗണ്ട്', shape: 'sighthound', description: 'An elegant sighthound... They have a long, narrow skull, lean body, and a whip-like tail.', description_ml: 'ഡെക്കാൻ പീഠഭൂമിയിൽ നിന്നുള്ള മനോഹരമായ വേട്ടനായ... നീളമുള്ള, ഇടുങ്ങിയ തലയോട്ടിയും മെലിഞ്ഞ ശരീരവും ചാട്ട പോലെയുള്ള വാലും ഇവയ്ക്കുണ്ട്.', image: 'https://placehold.co/600x400/c2b280/FFFFFF?text=Mudhol+Hound' },
+            { id: 'chippiparai', name: 'Chippiparai', name_ml: 'ചിപ്പിപ്പാറൈ', shape: 'sighthound', description: 'A sleek sighthound from Tamil Nadu... They have a slender, graceful body with a short, fine coat.', description_ml: 'തമിഴ്‌നാട്ടിൽ നിന്നുള്ള ഒരു സുന്ദരൻ വേട്ടനായ... നേർത്തതും ഭംഗിയുള്ളതുമായ ശരീരവും ചെറിയ, മിനുസമാർന്ന രോമങ്ങളുമുണ്ട്.', image: 'https://placehold.co/600x400/deb887/FFFFFF?text=Chippiparai' },
+            { id: 'gaddi', name: 'Gaddi Kutta', name_ml: 'ഗഡ്ഡി കുട്ട', shape: 'bulky', description: 'A powerful mastiff-type mountain dog... They possess great strength and a thick double coat.', description_ml: 'ശക്തനായ ഒരു മാസ്റ്റിഫ് ഇനം പർവത നായ... വലിയ ശക്തിയും കട്ടിയുള്ള ഇരട്ട രോമങ്ങളും ഇവയ്ക്കുണ്ട്.', image: 'https://placehold.co/600x400/2F4F4F/FFFFFF?text=Gaddi+Kutta' },
+            { id: 'kanni', name: 'Kanni', name_ml: 'കന്നി', shape: 'sighthound', description: 'A rare sighthound from Tamil Nadu... They typically have a black-and-tan coat.', description_ml: 'തമിഴ്‌നാട്ടിൽ നിന്നുള്ള ഒരു അപൂർവ വേട്ടനായ... സാധാരണയായി കറുപ്പും തവിട്ടുനിറവുമുള്ള രോമങ്ങളാണുള്ളത്.', image: 'https://placehold.co/600x400/4b3621/FFFFFF?text=Kanni' },
+            { id: 'rampur', name: 'Rampur Greyhound', name_ml: 'രാംപൂർ ഗ്രേഹൗണ്ട്', shape: 'sighthound', description: 'A powerful and athletic sighthound from the Rampur region... Larger and more robust than other greyhounds.', description_ml: 'രാംപൂർ മേഖലയിൽ നിന്നുള്ള ശക്തനും കായികക്ഷമതയുമുള്ള വേട്ടനായ... മറ്റ് ഗ്രേഹൗണ്ടുകളേക്കാൾ വലുതും കരുത്തുറ്റതുമാണ്.', image: 'https://placehold.co/600x400/808080/FFFFFF?text=Rampur+Greyhound' },
+            { id: 'spitz', name: 'Indian Spitz', name_ml: 'ഇന്ത്യൻ സ്പിറ്റ്സ്', shape: 'small_fluffy', description: 'Often mistaken for a Pomeranian... They have a pointed muzzle, erect ears, and a thick white coat.', description_ml: 'പോമറേനിയൻ ആണെന്ന് പലപ്പോഴും തെറ്റിദ്ധരിക്കാറുണ്ട്... കൂർത്ത മുഖവും നിവർന്ന ചെവികളും കട്ടിയുള്ള വെളുത്ത രോമങ്ങളുമുണ്ട്.', image: 'https://placehold.co/600x400/ffffff/333333?text=Indian+Spitz' },
+            { id: 'mixed', name: 'Mixed Breed', name_ml: 'സങ്കരയിനം', shape: 'standard', description: 'A beautiful dog with a unique heritage from multiple breeds... Their appearance can vary greatly.', description_ml: 'ഒന്നിലധികം ഇനങ്ങളിൽ നിന്നുള്ള സവിശേഷ പാരമ്പര്യമുള്ള ഒരു സുന്ദരനായ നായ... ഇവയുടെ രൂപം വളരെ വ്യത്യസ്തമായിരിക്കും.', image: 'https://placehold.co/600x400/9b7d6b/FFFFFF?text=Mixed+Breed' },
+        ];
+
         const uploadArea = document.getElementById('upload-area');
         const fileInput = document.getElementById('dog-photo-upload');
         const uploadContainer = document.getElementById('upload-container');
         const previewContainer = document.getElementById('preview-container');
         const imagePreview = document.getElementById('image-preview');
         const removeImageBtn = document.getElementById('remove-image-btn');
-        const identifyBtn = document.getElementById('identify-btn');
         const resultSection = document.getElementById('result-section');
         const loaderContainer = document.getElementById('loader-container');
         const resultContent = document.getElementById('result-content');
+        const analysisOptions = document.getElementById('analysis-options');
+        const langEnBtn = document.getElementById('lang-en');
+        const langMlBtn = document.getElementById('lang-ml');
+        const uploadError = document.getElementById('upload-error');
+        const shapePreviewContainer = document.getElementById('shape-preview-container');
 
-        // --- Drag and Drop functionality ---
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, preventDefaults, false);
-            document.body.addEventListener(eventName, preventDefaults, false);
+        function updateLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.dataset.translate;
+                if (translations[lang] && translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            langEnBtn.classList.toggle('bg-blue-600', lang === 'en');
+            langEnBtn.classList.toggle('text-white', lang === 'en');
+            langEnBtn.classList.toggle('bg-transparent', lang !== 'en');
+            langEnBtn.classList.toggle('text-slate-600', lang !== 'en');
+            langMlBtn.classList.toggle('bg-blue-600', lang === 'ml');
+            langMlBtn.classList.toggle('text-white', lang === 'ml');
+            langMlBtn.classList.toggle('bg-transparent', lang !== 'ml');
+            langMlBtn.classList.toggle('text-slate-600', lang !== 'ml');
+        }
+
+        langEnBtn.addEventListener('click', () => updateLanguage('en'));
+        langMlBtn.addEventListener('click', () => updateLanguage('ml'));
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(e => {
+            uploadArea.addEventListener(e, preventDefaults, false);
+            document.body.addEventListener(e, preventDefaults, false);
         });
 
         function preventDefaults(e) {
@@ -118,42 +267,38 @@
             e.stopPropagation();
         }
 
-        ['dragenter', 'dragover'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, () => uploadArea.classList.add('dragover'), false);
+        ['dragenter', 'dragover'].forEach(e => {
+            uploadArea.addEventListener(e, () => uploadArea.classList.add('dragover'), false);
         });
 
-        ['dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, () => uploadArea.classList.remove('dragover'), false);
+        ['dragleave', 'drop'].forEach(e => {
+            uploadArea.addEventListener(e, () => uploadArea.classList.remove('dragover'), false);
         });
 
-        uploadArea.addEventListener('drop', handleDrop, false);
+        uploadArea.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files), false);
+        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
 
-        function handleDrop(e) {
-            let dt = e.dataTransfer;
-            let files = dt.files;
-            handleFiles(files);
-        }
-        
-        // --- File input change event ---
-        fileInput.addEventListener('change', (e) => {
-            handleFiles(e.target.files);
-        });
-
-        // --- Handle file processing ---
         function handleFiles(files) {
-            if (files.length > 0) {
-                const file = files[0];
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        imagePreview.src = e.target.result;
-                        showPreview();
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    alert('Please upload an image file.');
-                }
+            uploadError.classList.add('hidden');
+            if (!files || files.length === 0) return;
+            const file = files[0];
+            if (!file.type.startsWith('image/')) {
+                uploadError.textContent = translations[currentLang].upload_error_type;
+                uploadError.classList.remove('hidden');
+                fileInput.value = '';
+                return;
             }
+            const reader = new FileReader();
+            reader.onload = e => {
+                imagePreview.src = e.target.result;
+                showPreview();
+            };
+            reader.onerror = () => {
+                uploadError.textContent = translations[currentLang].upload_error_read;
+                uploadError.classList.remove('hidden');
+                fileInput.value = '';
+            };
+            reader.readAsDataURL(file);
         }
         
         function showPreview() {
@@ -161,115 +306,127 @@
             previewContainer.classList.remove('hidden');
             resultSection.classList.add('hidden');
             resultContent.classList.add('hidden');
-            loaderContainer.classList.remove('hidden');
         }
         
         function hidePreview() {
             uploadContainer.classList.remove('hidden');
             previewContainer.classList.add('hidden');
             resultSection.classList.add('hidden');
-            fileInput.value = ''; // Reset file input
+            fileInput.value = '';
         }
 
         removeImageBtn.addEventListener('click', hidePreview);
+        
+        // --- Analysis Logic ---
+        analysisOptions.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                startAnalysis(e.target.dataset.hint);
+            }
+        });
 
-        // --- Simulated Model Identification ---
-        identifyBtn.addEventListener('click', () => {
+        // --- NEW: Hint Hover Preview Logic ---
+        const hintButtons = analysisOptions.querySelectorAll('button[data-hint]');
+        hintButtons.forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                const hint = button.dataset.hint;
+                if (hint === 'general') {
+                    shapePreviewContainer.classList.add('hidden');
+                    return;
+                }
+                const breed = breeds.find(b => b.id === hint);
+                if (breed && breed.shape) {
+                    const shapeSvg = dogShapes[breed.shape];
+                    if (shapeSvg) {
+                        shapePreviewContainer.innerHTML = shapeSvg;
+                        shapePreviewContainer.classList.remove('hidden');
+                    }
+                }
+            });
+            button.addEventListener('mouseleave', () => {
+                shapePreviewContainer.classList.add('hidden');
+                shapePreviewContainer.innerHTML = '';
+            });
+        });
+
+
+        function startAnalysis(hint) {
             resultSection.classList.remove('hidden');
             resultContent.classList.add('hidden');
             loaderContainer.style.display = 'flex';
-            
-            // Simulate API call delay
-            setTimeout(runSimulatedAnalysis, 2500);
-        });
-        
-        function runSimulatedAnalysis() {
-            const breeds = [
-                {
-                    name: 'Indian Pariah Dog (Indog)',
-                    description: 'The quintessential Indian street dog, known for its resilience, intelligence, and adaptability. They have a short coat, a curled tail, and erect ears.',
-                    image: 'https://placehold.co/600x400/d2b48c/FFFFFF?text=Indog',
-                },
-                {
-                    name: 'Kombai',
-                    description: 'A powerful and loyal sighthound breed from Tamil Nadu, originally used for hunting. They have a reddish-brown coat and a black mask.',
-                    image: 'https://placehold.co/600x400/8b4513/FFFFFF?text=Kombai',
-                },
-                {
-                    name: 'Rajapalayam',
-                    description: 'A regal and graceful sighthound from Tamil Nadu, known for its milky-white coat and pink nose. They are fiercely loyal and protective.',
-                    image: 'https://placehold.co/600x400/f5f5dc/333333?text=Rajapalayam',
-                },
-                {
-                    name: 'Mudhol Hound',
-                    description: 'An elegant sighthound from the Deccan Plateau, known for its incredible speed and stamina. They have a long, narrow head and a lean body.',
-                    image: 'https://placehold.co/600x400/c2b280/FFFFFF?text=Mudhol+Hound',
-                },
-                 {
-                    name: 'Bakharwal Dog',
-                    description: 'A fluffy and powerful livestock guardian dog from the Himalayas. They are gentle with their family but protective against intruders.',
-                    image: 'https://placehold.co/600x400/a9a9a9/FFFFFF?text=Bakharwal',
-                },
-                {
-                    name: 'Chippiparai',
-                    description: 'A sighthound breed from Tamil Nadu, known for its slender and elegant build. They are excellent hunters and loyal companions.',
-                    image: 'https://placehold.co/600x400/deb887/FFFFFF?text=Chippiparai'
-                },
-                {
-                    name: 'Gaddi Kutta',
-                    description: 'A mastiff-type mountain dog from the Himalayas, used by local shepherds. They are strong, courageous, and known for being gentle giants with their families.',
-                    image: 'https://placehold.co/600x400/2F4F4F/FFFFFF?text=Gaddi+Kutta'
-                },
-                {
-                    name: 'Kanni',
-                    description: 'A rare sighthound breed from Tamil Nadu, related to the Chippiparai. They are known for their loyalty and shy temperament, typically with a black and tan coat.',
-                    image: 'https://placehold.co/600x400/4b3621/FFFFFF?text=Kanni'
-                },
-                {
-                    name: 'Rampur Greyhound',
-                    description: 'A fast and powerful sighthound from the Rampur region of Northern India. They are known for their endurance and were historically used to hunt large game.',
-                    image: 'https://placehold.co/600x400/808080/FFFFFF?text=Rampur+Greyhound'
-                },
-                {
-                    name: 'Mixed Breed',
-                    description: 'A beautiful dog with a unique heritage from multiple breeds. Mixed breed dogs are often very healthy, intelligent, and have wonderful temperaments.',
-                    image: 'https://placehold.co/600x400/9b7d6b/FFFFFF?text=Mixed+Breed',
-                }
-            ];
-            
-            const randomBreed = breeds[Math.floor(Math.random() * breeds.length)];
-            const confidence = Math.floor(Math.random() * (96 - 75 + 1)) + 75;
-
-            displayResults(randomBreed, confidence);
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(() => runSimulatedAnalysis(hint), 2500);
         }
         
-        function displayResults(breed, confidence) {
+        function runSimulatedAnalysis(hint) {
+            let topMatch;
+            let otherBreeds;
+            if (hint && hint !== 'general') {
+                topMatch = breeds.find(b => b.id === hint);
+                otherBreeds = breeds.filter(b => b.id !== hint);
+            } else {
+                const shuffled = [...breeds].sort(() => 0.5 - Math.random());
+                topMatch = shuffled[0];
+                otherBreeds = shuffled.slice(1);
+            }
+            const shuffledOthers = otherBreeds.sort(() => 0.5 - Math.random());
+            const secondGuess = shuffledOthers[0];
+            const thirdGuess = shuffledOthers[1];
+            displayResults(topMatch, secondGuess, thirdGuess);
+        }
+        
+        function displayResults(top, second, third) {
+            const topConf = Math.floor(Math.random() * 12) + 85;
+            const secondConf = Math.floor(Math.random() * 16) + 60;
+            const thirdConf = Math.floor(Math.random() * 16) + 40;
             loaderContainer.style.display = 'none';
 
-            resultContent.innerHTML = `
-                <h2 class="text-2xl font-bold text-slate-800 mb-2">Identification Result</h2>
-                <div class="bg-slate-100 p-6 rounded-lg text-left">
+            const shapeSvg = dogShapes[top.shape] || '';
+
+            const topMatchHtml = `
+                <h2 class="text-2xl font-bold text-slate-800 mb-4" data-translate="result_title">${translations[currentLang].result_title}</h2>
+                <div class="bg-blue-50 border border-blue-200 p-4 md:p-6 rounded-lg text-left mb-6">
+                    <p class="text-sm font-semibold text-blue-700 mb-2" data-translate="top_match">${translations[currentLang].top_match}</p>
                     <div class="md:flex md:items-start md:gap-6">
-                        <img src="${breed.image}" alt="Image of ${breed.name}" class="w-full md:w-1/3 h-auto rounded-md shadow-sm mb-4 md:mb-0" onerror="this.src='https://placehold.co/400x300/cccccc/ffffff?text=Image+Not+Found'">
-                        <div class="md:w-2/3">
-                            <p class="text-sm text-slate-500">Top Match</p>
-                            <h3 class="text-2xl font-bold text-blue-600">${breed.name}</h3>
+                        <div class="w-full md:w-1/2">
+                             <img src="${top.image}" alt="Image of ${top.name}" class="w-full h-auto rounded-md shadow-sm mb-4">
+                             <h4 class="font-semibold text-sm text-slate-600 mb-2" data-translate="shape_title">${translations[currentLang].shape_title}</h4>
+                             <div id="dog-animation-container" class="w-full h-auto bg-slate-200 rounded-lg flex items-center justify-center p-2">
+                                ${shapeSvg}
+                             </div>
+                        </div>
+                        <div class="md:w-1/2">
+                            <h3 class="text-2xl font-bold text-blue-800">${currentLang === 'ml' ? top.name_ml : top.name}</h3>
                             <div class="w-full bg-slate-200 rounded-full h-2.5 my-3">
-                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${confidence}%"></div>
+                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${topConf}%"></div>
                             </div>
-                            <p class="text-slate-700 font-semibold mb-3">${confidence}% Confidence</p>
-                            <p class="text-slate-600 text-sm">${breed.description}</p>
+                            <p class="text-slate-700 font-semibold mb-3">${topConf}% <span data-translate="confidence">${translations[currentLang].confidence}</span></p>
+                            <p class="text-slate-600 text-sm">${currentLang === 'ml' ? top.description_ml : top.description}</p>
                         </div>
                     </div>
                 </div>
             `;
+
+            const otherPossibilitiesHtml = `
+                <h3 class="text-xl font-bold text-slate-700 mb-4 text-left" data-translate="other_possibilities">${translations[currentLang].other_possibilities}</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                    <div class="bg-slate-100 p-4 rounded-lg">
+                        <h4 class="font-bold text-slate-800">${currentLang === 'ml' ? second.name_ml : second.name}</h4>
+                        <p class="text-sm text-slate-600 mb-2">${secondConf}% <span data-translate="confidence">${translations[currentLang].confidence}</span></p>
+                    </div>
+                    <div class="bg-slate-100 p-4 rounded-lg">
+                        <h4 class="font-bold text-slate-800">${currentLang === 'ml' ? third.name_ml : third.name}</h4>
+                        <p class="text-sm text-slate-600 mb-2">${thirdConf}% <span data-translate="confidence">${translations[currentLang].confidence}</span></p>
+                    </div>
+                </div>
+            `;
             
+            resultContent.innerHTML = topMatchHtml + otherPossibilitiesHtml;
             resultContent.classList.remove('hidden');
         }
-
     </script>
 </body>
 </html>
+
 
 
 
